@@ -19,8 +19,14 @@
 
 package org.langera.freud.optional.javasource;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.langera.freud.core.matcher.RegexCollectionMatcherAdapter;
 import org.langera.freud.core.matcher.RegexMatcherAdapter;
+import org.langera.freud.core.matcher.StringCollectionMatcherBuilder;
 import org.langera.freud.core.matcher.StringMatcherBuilder;
+import org.langera.freud.optional.javasource.importdecl.ImportDeclaration;
 
 
 public final class JavaSourceDsl
@@ -64,5 +70,28 @@ public final class JavaSourceDsl
                 return "JavaSourceSimpleClassName";
             }
         });
+    }
+    
+    public static StringCollectionMatcherBuilder<JavaSource> importDeclarations() 
+    {
+    	return new StringCollectionMatcherBuilder<JavaSource>(new RegexCollectionMatcherAdapter<JavaSource>() 
+    	{
+			@Override
+			public List<String> getStringsToMatch(JavaSource toBeAnalysed) {
+	            {
+	            	List<String> importDeclarationsAsString = new ArrayList<String>();
+	            	for (ImportDeclaration importDeclaration : toBeAnalysed.getImportDeclarations()) {
+	            		importDeclarationsAsString.add(importDeclaration.getImportDeclarationPathAsString());
+					}
+	            			
+	                return importDeclarationsAsString;
+	            }
+			}
+			@Override
+			public String matcherDisplayName() 
+			{
+				return "JavaSourceImportDeclarations";
+			}
+		});
     }
 }
